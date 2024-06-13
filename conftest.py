@@ -13,7 +13,7 @@ def browser(request):
     user_language = request.config.getoption("language")
     options = Options()
     options.add_experimental_option('prefs', {'intl.accept_languages': user_language})
-    print(f"\nsЗапуск браузера..")
+    print(f"\nЗапуск браузера..")
     browser = webdriver.Chrome(options=options)
     yield browser
     print("\nЗакрываем браузер...")
