@@ -1,27 +1,31 @@
 from .base_page import BasePage
-from .locators import ProductPageLocators
+from .locators import ProductsLocators
 
 class ProductPage(BasePage):
+    def add_to_basket(self):
+        button = self.browser.find_element(*ProductsLocators.ADD_TO_BASKET_BUTTON)
+        button.click()
 
-    def should_to_go_promo_product_link(self):
-        assert "newYear" in (ProductPageLocators.PRODUCT_PAGE), "Wrong URL" #Проверяем URL
-    def should_be_add_to_basket_btn(self):
-        assert self.is_element_present(*ProductPageLocators.PRODUCT_BUTTON), "Button 'Add to basket' not available"
-#Проверяем кнопку, на момент написания тестов, кнопки не было"
-    def btn_should_be_clickable(self):
-        button1 = self.browser.find_element(*ProductPageLocators.PRODUCT_BUTTON)
-        button1.click()
-#Все в наличии жмём на кнопку
-    def message_about_product(self):
-        assert self.is_element_present(*ProductPageLocators.PRODUCT_NAME), "Product not found"
-        assert self.is_element_present(*ProductPageLocators.MESSAGE_SUCCESS_ADDING), "Message not found"
-        message_basket = self.browser.find_element(*ProductPageLocators.MESSAGE_SUCCESS_ADDING).text
-        name_of_product = self.browser.find_element(*ProductPageLocators.PRODUCT_NAME).text
-        assert name_of_product in message_basket, "Product not in basket"
+    def get_alert_product_name(self):
+        element = self.wait_for_element_present(*ProductsLocators.ALERT_SUCCESS)
+        return element.text
 
-    def total_price(self):
-        assert self.is_element_present(*ProductPageLocators.PRODUCT_PRICE), "Not found product price"
-        assert self.is_element_present(*ProductPageLocators.PRICE_IN_BASKET), "Product not in basket"
-        price_product = self.browser.find_element(*ProductPageLocators.PRODUCT_PRICE).text
-        basket_price = self.browser.find_element(*ProductPageLocators.PRICE_IN_BASKET).text
-        assert price_product == basket_price, "Product not in basket"
+    def get_alert_basket_price(self):
+        element = self.wait_for_element_present(*ProductsLocators.ALERT_INFO_LABEL)
+        return element.text
+
+    def get_product_price(self):
+        element = self.browser.find_element(*ProductsLocators.PRODUCT_PRICE_LABEL)
+        return element.text
+
+    def get_product_name(self):
+        element = self.browser.find_element(*ProductsLocators.PRODUCT_NAME_LABEL)
+        return element.text
+
+    def should_not_be_success_message(self):
+        assert self.is_not_element_present(*ProductsLocators.ALERT_SUCCESS), \
+            "Success message is presented, but should not be"
+
+    def success_message_is_disappeared(self):
+        assert self.is_disappeared(*ProductsLocators.ALERT_SUCCESS), \
+            "Success message is presented, but should not be"
